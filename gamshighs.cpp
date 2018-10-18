@@ -25,7 +25,8 @@ struct gamshighs_s
    HModel*     model;
 };
 
-static int setupProblem(
+static
+int setupProblem(
    gamshighs_t* highs
 )
 {
@@ -130,6 +131,41 @@ TERMINATE:
    return rc;
 }
 
+static
+int processSolve(
+   gamshighs_t* highs
+)
+{
+   double* x;
+   double* pi;
+
+   assert(highs != NULL);
+
+   gmoSetHeadnTail(highs->gmo, gmoHresused, gevTimeDiffStart(highs->gev));
+   gmoSetHeadnTail(highs->gmo, gmoHiterused, 42 /* FIXME number of iterations */);
+
+   /* FIXME below assumes best possible outcome: solved to optimality, have optimal primal and dual solution */
+
+   x = new double[gmoN(highs->gmo)];
+   pi = new double[gmoM(highs->gmo)];
+
+   /* TODO fill x with primal solution
+    * TODO fill pi with dual solution (w.r.t. rows)
+    * TODO probably should use gmoSetSolution or gmoSetSolution8
+    */
+
+   gmoSetSolution2(highs->gmo, x, pi);
+   gmoCompleteSolution(highs->gmo);
+
+   gmoModelStatSet(highs->gmo, gmoModelStat_OptimalGlobal);
+   gmoSolveStatSet(highs->gmo, gmoSolveStat_Normal);
+
+   delete[] x;
+   delete[] pi;
+
+   return 0;
+}
+
 void his_Create(
    gamshighs_t** highs,
    char*         msgBuf,
@@ -201,9 +237,11 @@ int his_CallSolver(
 
    /* TODO solve the problem here */
 
-   gmoSetHeadnTail(highs->gmo, gmoHresused, gevTimeDiffStart(highs->gev));
+   /* pass solution, status, etc back to GMO here */
 
-   /* TODO pass solution, status, etc back to GMO here */
+   /* process solve outcome */
+   if( !processSolve(highs) )
+      goto TERMINATE;
 
    rc = 0;
 TERMINATE:
