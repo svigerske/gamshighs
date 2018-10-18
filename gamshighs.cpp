@@ -6,9 +6,14 @@
 #include <assert.h>
 
 #include "gamshighs.h"
+
+/* GAMS API */
 #include "gmomcc.h"
 #include "gevmcc.h"
 #include "optcc.h"
+
+/* HiGHS API */
+#include "HModel.h"
 
 struct gamshighs_s
 {
@@ -17,6 +22,16 @@ struct gamshighs_s
    optHandle_t opt;
    int         debug;
 };
+
+static int setupProblem(
+   gamshighs_t* highs
+)
+{
+   assert(highs != NULL);
+
+
+   return 0;
+}
 
 void his_Create(
    gamshighs_t** highs,
@@ -59,8 +74,8 @@ int his_CallSolver(
    }
 
    memset(highs, 0, sizeof(gamshighs_t));
-   highs->gmo = gmo;
-   highs->gev = gmoEnvironment(gmo);
+   highs->gmo = (gmoHandle_t)gmo;
+   highs->gev = (gevHandle_t)gmoEnvironment(highs->gmo);
 
    gevLogStat(highs->gev, "This is the GAMS link to HiGHS.");
 
@@ -77,6 +92,9 @@ int his_CallSolver(
    gmoObjReformSet(highs->gmo, 1);
    gmoIndexBaseSet(highs->gmo, 0);
    gmoSetNRowPerm(highs->gmo); /* hide =N= rows */
+
+   if( !setupProblem(highs) )
+	   goto TERMINATE;
 
    reslim = gevGetDblOpt(highs->gev, gevResLim);
    gevTimeSetStart(highs->gev);
