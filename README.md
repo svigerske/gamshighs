@@ -4,7 +4,7 @@ This is a very basic code to call [HiGHS](https://github.com/ERGO-Code/HiGHS) fr
 
 To build:
 - Create a symlink "gams" pointing to a GAMS system directory.
-- Create a symlink "highs" pointing a a HiGHS installation directory.
+- Create a symlink "highs" pointing to a HiGHS installation directory.
 - Call make.
 
 We assume Linux, maybe MacOS X will work too.
