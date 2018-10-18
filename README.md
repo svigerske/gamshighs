@@ -21,7 +21,7 @@ To install in GAMS:
 ```
 - Add an entry for HiGHS to gmscmpun.txt in the GAMS system directory:
 ```
-HIGHS 111 5 EC 1 0 1 LP RMIP
+HIGHS 111 5 0001020304 1 0 1 LP RMIP
 gmshisus.run
 /path/to/here/gamshighs
 ```
