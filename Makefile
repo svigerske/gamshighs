@@ -15,3 +15,4 @@ CFLAGS = $(IFLAGS) $(WFLAGS) -g -std=c99
 CXXFLAGS = $(IFLAGS) $(WFLAGS) -g -std=c++11
 
 LDFLAGS = -ldl -Wl,-rpath,\$$ORIGIN -Wl,-rpath,$(realpath gams)
+LDFLAGS += -Lhighs/lib -lhighs -Wl,-rpath,$(realpath highs/lib)
